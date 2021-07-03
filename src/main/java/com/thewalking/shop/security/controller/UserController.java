@@ -23,7 +23,7 @@ public class UserController {
     private UserService userService;
 
     //@Secured({"ROLE_ADMIN", "ROLE_USER"})
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','OWNER')")
     @RequestMapping(value="/users", method = RequestMethod.GET)
     public List<User> listUser(){
         return userService.findAll();
@@ -31,7 +31,7 @@ public class UserController {
 
     //@Secured("ROLE_USER")
     //@PreAuthorize("hasRole('USER')")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('OWNER')")
     @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
     public User getOne(@PathVariable(value = "id") Long id){
         return userService.findById(id);
