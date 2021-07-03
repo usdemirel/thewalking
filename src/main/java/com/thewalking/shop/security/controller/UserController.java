@@ -3,12 +3,17 @@ package com.thewalking.shop.security.controller;
 import com.thewalking.shop.security.model.User;
 import com.thewalking.shop.security.model.UserDto;
 import com.thewalking.shop.security.service.UserService;
+import org.springframework.dao.DataIntegrityViolationException;
+import javax.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.server.ResponseStatusException;
+import javax.validation.Valid;
+import java.util.*;
+import static com.thewalking.shop.exception.ErrorMessages.RECORD_ALREADY_EXISTS;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -33,8 +38,25 @@ public class UserController {
     }
 
     @RequestMapping(value="/signup", method = RequestMethod.POST)
-    public User saveUser(@RequestBody UserDto user){
-        return userService.save(user);
+    public ResponseEntity<User> saveUser(@Valid @RequestBody UserDto user){
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
+        }catch (DataIntegrityViolationException e){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, RECORD_ALREADY_EXISTS.name(), e);
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public Map<String, String> handleValidationExceptions(ConstraintViolationException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getConstraintViolations().stream().forEach(cv ->
+                 errors.put(cv.getPropertyPath().toString(), cv.getMessage()));
+
+        return errors;
     }
 
 

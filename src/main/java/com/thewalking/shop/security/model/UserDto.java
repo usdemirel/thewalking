@@ -8,13 +8,10 @@ import javax.persistence.Enumerated;
 @Data
 public class UserDto {
 
-    private String username;
+    private String email;
     private String password;
     private int age;
     private int salary;
     private String role;
 
-    public void setRole(String role) {
-        this.role = Roles.valueOf(role).getRole();
-    }
 }

@@ -1,11 +1,14 @@
 package com.thewalking.shop.security.service.impl;
 
+import com.thewalking.shop.exception.ErrorMessages;
+import com.thewalking.shop.exception.UserException;
 import com.thewalking.shop.security.dao.UserDao;
-import com.thewalking.shop.security.model.Roles;
 import com.thewalking.shop.security.model.User;
 import com.thewalking.shop.security.model.UserDto;
 import com.thewalking.shop.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,11 +29,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	private BCryptPasswordEncoder bcryptEncoder;
 
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userDao.findByUsername(username);
+		User user = userDao.findByEmail(username);
 		if(user == null){
 			throw new UsernameNotFoundException("Invalid username or password.");
 		}
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority(user));
+		return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), getAuthority(user));
 	}
 
 	private Set<SimpleGrantedAuthority> getAuthority(User user) {
@@ -52,7 +55,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
 	@Override
 	public User findOne(String username) {
-		return userDao.findByUsername(username);
+		return userDao.findByEmail(username);
 	}
 
 	@Override
@@ -61,14 +64,22 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	}
 
 	@Override
-    public User save(UserDto user) {
+    public User save(UserDto user) throws Exception {
 	    User newUser = new User();
-	    newUser.setUsername(user.getUsername());
+	    newUser.setEmail(user.getEmail());
 	    newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
 		newUser.setAge(user.getAge());
 		newUser.setSalary(user.getSalary());
 		newUser.setRole(user.getRole());
-
-		return userDao.save(newUser);
+		System.out.println("about to return");
+		User saved;
+//		try {
+			saved = userDao.save(newUser);
+//		}catch(DataIntegrityViolationException dive){
+//			throw new DataIntegrityViolationException(ErrorMessages.RECORD_ALREADY_EXISTS.getErrorMessage());
+//		}catch (Exception e){
+//			throw new Exception("not saved!");
+//		}
+		return saved;
     }
 }
