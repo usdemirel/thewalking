@@ -1,6 +1,7 @@
 package com.thewalking.shop.security.service.impl;
 
 import com.thewalking.shop.security.dao.UserDao;
+import com.thewalking.shop.security.model.Roles;
 import com.thewalking.shop.security.model.User;
 import com.thewalking.shop.security.model.UserDto;
 import com.thewalking.shop.security.service.UserService;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.*;
+
 
 
 @Service(value = "userService")
@@ -33,12 +35,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
 	private Set<SimpleGrantedAuthority> getAuthority(User user) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-		user.getRoles().forEach(role -> {
-			//authorities.add(new SimpleGrantedAuthority(role.getName()));
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-		});
+			authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
 		return authorities;
-		//return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
 	}
 
 	public List<User> findAll() {
@@ -69,6 +67,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	    newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
 		newUser.setAge(user.getAge());
 		newUser.setSalary(user.getSalary());
-        return userDao.save(newUser);
+		newUser.setRole(user.getRole());
+
+		return userDao.save(newUser);
     }
 }
