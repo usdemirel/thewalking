@@ -3,12 +3,12 @@ package com.thewalking.shop.security.service.impl;
 import com.thewalking.shop.exception.ErrorMessages;
 import com.thewalking.shop.exception.UserException;
 import com.thewalking.shop.security.dao.UserDao;
+import com.thewalking.shop.security.model.Address;
+import com.thewalking.shop.security.model.Roles;
 import com.thewalking.shop.security.model.User;
 import com.thewalking.shop.security.model.UserDto;
 import com.thewalking.shop.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,8 +16,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.*;
-
-
 
 @Service(value = "userService")
 public class UserServiceImpl implements UserDetailsService, UserService {
@@ -64,14 +62,51 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	}
 
 	@Override
+	public User makeUserInActive(User user) {
+		user.setActive(false);
+		return userDao.save(user);
+	}
+
+	@Override
+	public User makeUserInActiveById(Long id) {
+		Optional<User> changed = userDao.findById(id).flatMap(user -> {
+			user.setActive(false);
+			return Optional.of(userDao.save(user));
+		});
+		return changed.orElseThrow(() -> {
+			throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		});
+	}
+
+	@Override
+	public User changeUserRole(Long id, Roles role) {
+		Optional<User> changed = userDao.findById(id).flatMap(user -> {
+			user.setRole(role.getRole());
+			return Optional.of(userDao.save(user));
+		});
+		return changed.orElseThrow(() -> {
+			throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		});
+	}
+
+	@Override
     public User save(UserDto user) throws Exception {
 	    User newUser = new User();
 	    newUser.setEmail(user.getEmail());
 	    newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
-		newUser.setAge(user.getAge());
-		newUser.setSalary(user.getSalary());
 		newUser.setRole(user.getRole());
-		System.out.println("about to return");
+		newUser.setFirstName(user.getFirstName());
+		newUser.setLastName(user.getLastName());
+		newUser.setPhone(user.getPhone());
+		newUser.setActive(user.isActive());
+		Address newAddress = new Address();
+		newAddress.setAddressLine1(user.getAddress().getAddressLine1());
+		newAddress.setAddressLine2(user.getAddress().getAddressLine2());
+		newAddress.setCity(user.getAddress().getCity());
+		newAddress.setState(user.getAddress().getState());
+		newAddress.setZipCode(user.getAddress().getZipCode());
+		newAddress.setCountry(user.getAddress().getCountry());
+		newUser.setAddress(newAddress);
 		User saved;
 //		try {
 			saved = userDao.save(newUser);

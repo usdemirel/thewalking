@@ -2,6 +2,7 @@ package com.thewalking.shop.security.service;
 
 
 
+import com.thewalking.shop.security.model.Roles;
 import com.thewalking.shop.security.model.User;
 import com.thewalking.shop.security.model.UserDto;
 
@@ -15,4 +16,7 @@ public interface UserService {
     User findOne(String username);
 
     User findById(Long id);
+    User makeUserInActive(User user);
+    User makeUserInActiveById(Long id);
+    public User changeUserRole(Long id, Roles role);
 }
