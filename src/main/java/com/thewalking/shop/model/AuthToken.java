@@ -1,4 +1,4 @@
-package com.thewalking.shop.security.model;
+package com.thewalking.shop.model;
 
 public class AuthToken {
 

@@ -1,13 +1,11 @@
-package com.thewalking.shop.security.service.impl;
+package com.thewalking.shop.service;
 
 import com.thewalking.shop.exception.ErrorMessages;
 import com.thewalking.shop.exception.UserException;
-import com.thewalking.shop.security.dao.UserDao;
-import com.thewalking.shop.security.model.Address;
-import com.thewalking.shop.security.model.Roles;
-import com.thewalking.shop.security.model.User;
-import com.thewalking.shop.security.model.UserDto;
-import com.thewalking.shop.security.service.UserService;
+import com.thewalking.shop.repository.UserRepository;
+import com.thewalking.shop.model.Roles;
+import com.thewalking.shop.entity.User;
+import com.thewalking.shop.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +19,7 @@ import java.util.*;
 public class UserServiceImpl implements UserDetailsService, UserService {
 	
 	@Autowired
-	private UserDao userDao;
+	private UserRepository userDao;
 
 	@Autowired
 	private BCryptPasswordEncoder bcryptEncoder;
@@ -36,7 +34,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
 	private Set<SimpleGrantedAuthority> getAuthority(User user) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-			authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
+			authorities.add(new SimpleGrantedAuthority("ROLE_" + ((user.isActive()) ? user.getRole() : "UNAUTHORIZED")));
+		System.out.println(authorities + "________________________");
 		return authorities;
 	}
 
@@ -68,9 +67,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	}
 
 	@Override
-	public User makeUserInActiveById(Long id) {
+	public User toggleUserActivenessById(Long id) {
 		Optional<User> changed = userDao.findById(id).flatMap(user -> {
-			user.setActive(false);
+			user.setActive(!user.isActive());
 			return Optional.of(userDao.save(user));
 		});
 		return changed.orElseThrow(() -> {
@@ -79,9 +78,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	}
 
 	@Override
-	public User changeUserRole(Long id, Roles role) {
+	public User changeUserRole(Long id, String role) {
 		Optional<User> changed = userDao.findById(id).flatMap(user -> {
-			user.setRole(role.getRole());
+			user.setRole(role);
 			return Optional.of(userDao.save(user));
 		});
 		return changed.orElseThrow(() -> {
@@ -99,14 +98,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 		newUser.setLastName(user.getLastName());
 		newUser.setPhone(user.getPhone());
 		newUser.setActive(user.isActive());
-		Address newAddress = new Address();
-		newAddress.setAddressLine1(user.getAddress().getAddressLine1());
-		newAddress.setAddressLine2(user.getAddress().getAddressLine2());
-		newAddress.setCity(user.getAddress().getCity());
-		newAddress.setState(user.getAddress().getState());
-		newAddress.setZipCode(user.getAddress().getZipCode());
-		newAddress.setCountry(user.getAddress().getCountry());
-		newUser.setAddress(newAddress);
+		newUser.setAddress(user.getAddress());
 		User saved;
 //		try {
 			saved = userDao.save(newUser);

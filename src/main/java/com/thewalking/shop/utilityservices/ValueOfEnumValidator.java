@@ -1,4 +1,4 @@
-package com.thewalking.shop.security.model;
+package com.thewalking.shop.utilityservices;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -14,6 +14,7 @@ public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, Ch
         acceptedValues = Stream.of(annotation.enumClass().getEnumConstants())
                 .map(Enum::name)
                 .collect(Collectors.toList());
+        acceptedValues.forEach(s -> System.out.println(s + " "));
     }
 
     @Override
@@ -21,7 +22,7 @@ public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, Ch
         if (value == null) {
             return true;
         }
-
+        System.out.println(value.toString());
         return acceptedValues.contains(value.toString());
     }
 }

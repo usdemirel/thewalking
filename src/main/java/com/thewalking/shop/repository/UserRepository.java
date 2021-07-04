@@ -1,11 +1,11 @@
-package com.thewalking.shop.security.dao;
+package com.thewalking.shop.repository;
 
-import com.thewalking.shop.security.model.User;
+import com.thewalking.shop.entity.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserDao extends CrudRepository<User, Long> {
+public interface UserRepository extends CrudRepository<User, Long> {
     User findByEmail(String username);
 
 }

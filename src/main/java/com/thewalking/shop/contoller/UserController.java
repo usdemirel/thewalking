@@ -1,8 +1,9 @@
-package com.thewalking.shop.security.controller;
+package com.thewalking.shop.contoller;
 
-import com.thewalking.shop.security.model.User;
-import com.thewalking.shop.security.model.UserDto;
-import com.thewalking.shop.security.service.UserService;
+import com.thewalking.shop.entity.User;
+import com.thewalking.shop.dto.UserDto;
+import com.thewalking.shop.model.Roles;
+import com.thewalking.shop.service.UserService;
 import org.springframework.dao.DataIntegrityViolationException;
 import javax.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,22 @@ public class UserController {
         return userService.findById(id);
     }
 
+
+//    toggleUserActivenessById
+    @PreAuthorize("hasAnyRole('OWNER')")
+    @RequestMapping(value = "/users/{id}/active/toggle", method = RequestMethod.GET)
+    public User toggleActiveness(@PathVariable Long id){
+        return userService.toggleUserActivenessById(id);
+    }
+
+    //    changeUserRole
+    @PreAuthorize("hasAnyRole('OWNER','MANAGER')")
+    @RequestMapping(value = "/users/{id}/role/change", method = RequestMethod.POST)
+    public User changeRole(@PathVariable Long id, @RequestBody String role){
+        System.out.println(id + " -- " + role);
+        return userService.changeUserRole(id, role);
+    }
+
     @RequestMapping(value="/signup", method = RequestMethod.POST)
     public ResponseEntity<User> saveUser(@Valid @RequestBody UserDto user){
         try {
@@ -58,7 +75,27 @@ public class UserController {
 
         return errors;
     }
-
+/**
+ * https://restfulapi.net/resource-naming/
+ * http://api.example.com/cart-management/users/{id}/cart/checkout
+ * http://api.example.com/song-management/users/{id}/playlist/play
+ *
+ * http://api.example.com/inventory-management/managed-entities/{id}/install-script-location
+ *
+ * HTTP GET http://api.example.com/device-management/managed-devices  //Get all devices
+ * HTTP POST http://api.example.com/device-management/managed-devices  //Create new Device
+ * HTTP GET http://api.example.com/device-management/managed-devices/{id}  //Get device for given Id
+ * HTTP PUT http://api.example.com/device-management/managed-devices/{id}  //Update device for given Id
+ * HTTP DELETE http://api.example.com/device-management/managed-devices/{id}  //Delete device for given Id
+ *
+ *Use query component to filter URI collection
+ *http://api.example.com/device-management/managed-devices
+ * http://api.example.com/device-management/managed-devices?region=USA
+ * http://api.example.com/device-management/managed-devices?region=USA&brand=XYZ
+ * http://api.example.com/device-management/managed-devices?region=USA&brand=XYZ&sort=installation-date
+ *
+ *
+ */
 
 
 }

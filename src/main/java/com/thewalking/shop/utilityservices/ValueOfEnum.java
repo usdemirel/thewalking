@@ -1,4 +1,6 @@
-package com.thewalking.shop.security.model;
+package com.thewalking.shop.utilityservices;
+
+import com.thewalking.shop.utilityservices.ValueOfEnumValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

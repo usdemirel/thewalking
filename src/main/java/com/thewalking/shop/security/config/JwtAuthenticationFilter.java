@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.thewalking.shop.security.model.Constants.TOKEN_PREFIX;
-import static com.thewalking.shop.security.model.Constants.HEADER_STRING;
+import static com.thewalking.shop.security.config.Constants.TOKEN_PREFIX;
+import static com.thewalking.shop.security.config.Constants.HEADER_STRING;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 

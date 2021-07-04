@@ -1,17 +1,13 @@
-package com.thewalking.shop.security.model;
+package com.thewalking.shop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
+import com.thewalking.shop.model.Roles;
+import com.thewalking.shop.utilityservices.ValueOfEnum;
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.util.Set;
 
 @Entity
 @Data
