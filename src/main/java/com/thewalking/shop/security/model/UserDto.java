@@ -1,41 +1,24 @@
 package com.thewalking.shop.security.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
+
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+
+@Data
 public class UserDto {
 
-    private String username;
+
+    private String email;
     private String password;
-    private int age;
-    private int salary;
+    private String role;
+    private boolean isActive;
+    private String firstName;
+    private String lastName;
+    private String phone;
+    private Address address;
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public int getSalary() {
-        return salary;
-    }
-
-    public void setSalary(int salary) {
-        this.salary = salary;
-    }
 }

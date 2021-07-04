@@ -1,78 +1,40 @@
 package com.thewalking.shop.security.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
+import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
-//@Table(name = "users")
+@Data
 public class User {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column
-    private String username;
+    @Email
+    @Column(unique=true)
+    @NotEmpty
+    private String email;
     @Column
     @JsonIgnore
     private String password;
     @Column
-    private long salary;
-    @Column
-    private int age;
+    @ValueOfEnum(enumClass = Roles.class)
+    private String role;
+    private boolean isActive;
+    private String firstName;
+    private String lastName;
+    private String phone;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Address address;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    @JoinTable(name = "USER_ROLES", joinColumns = {
-//            @JoinColumn(name = "USER_ID") }, inverseJoinColumns = {
-//            @JoinColumn(name = "ROLE_ID") })
-    private Set<Role> roles;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public long getSalary() {
-        return salary;
-    }
-
-    public void setSalary(long salary) {
-        this.salary = salary;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
 }
