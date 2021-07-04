@@ -1,9 +1,8 @@
-package com.thewalking.shop.security.controller;
+package com.thewalking.shop.contoller;
 
 import com.thewalking.shop.security.config.TokenProvider;
-import com.thewalking.shop.security.model.AuthToken;
-import com.thewalking.shop.security.model.LoginUser;
-import com.thewalking.shop.security.service.UserService;
+import com.thewalking.shop.model.AuthToken;
+import com.thewalking.shop.dto.LoginUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +32,10 @@ public class AuthenticationController {
                         loginUser.getPassword()
                 )
         );
+
+        System.out.println("authentication " + authentication);
+
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String token = jwtTokenUtil.generateToken(authentication);
         return ResponseEntity.ok(new AuthToken(token));

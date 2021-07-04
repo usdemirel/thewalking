@@ -1,6 +1,5 @@
 package com.thewalking.shop.security.config;
 
-import com.thewalking.shop.security.model.User;
 import io.jsonwebtoken.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,9 +15,9 @@ import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.thewalking.shop.security.model.Constants.ACCESS_TOKEN_VALIDITY_SECONDS;
-import static com.thewalking.shop.security.model.Constants.AUTHORITIES_KEY;
-import static com.thewalking.shop.security.model.Constants.SIGNING_KEY;
+import static com.thewalking.shop.security.config.Constants.ACCESS_TOKEN_VALIDITY_SECONDS;
+import static com.thewalking.shop.security.config.Constants.AUTHORITIES_KEY;
+import static com.thewalking.shop.security.config.Constants.SIGNING_KEY;
 
 @Component
 public class TokenProvider implements Serializable {

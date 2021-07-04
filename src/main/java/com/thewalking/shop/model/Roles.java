@@ -1,11 +1,8 @@
-package com.thewalking.shop.security.model;
+package com.thewalking.shop.model;
 
-import javax.persistence.Entity;
 import java.io.Serializable;
 
 public enum Roles implements Serializable {
-//    ADMIN("ADMIN"),OWNER("OWNER"),MANAGER("MANAGER")
-//    ,SALESPERSON("SALESPERSON"),CUSTOMER("CUSTOMER"),GUEST("GUEST");
 
     ADMIN,OWNER,MANAGER
     ,EMPLOYEE,CUSTOMER,GUEST,NEWHIRE,FIRE,UNAUTHORIZED;

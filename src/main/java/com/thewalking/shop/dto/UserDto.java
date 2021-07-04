@@ -1,12 +1,7 @@
-package com.thewalking.shop.security.model;
+package com.thewalking.shop.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.thewalking.shop.entity.Address;
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
-
-import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 
 @Data
 public class UserDto {
