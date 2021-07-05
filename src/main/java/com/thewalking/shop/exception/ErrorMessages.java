@@ -5,6 +5,7 @@ public enum ErrorMessages {
     RECORD_ALREADY_EXISTS("Record already exists"),
     INTERNAL_SERVICE_ERROR("Internal Service error"),
     NO_RECORD_FOUND("Record with provided ID is not found"),
+    NO_AUTHORIZATION("User doesn't have the authorization to run such a query"),
     AUTHENTICATION_FAILED("Authentication failed"),
     COULD_NOT_SAVE_RECORD("Record not saved"),
     COULD_NOT_UPDATE_RECORD("Could not update record"),
