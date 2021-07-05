@@ -9,13 +9,13 @@ import javax.persistence.Id;
 
 @Entity
 @Data
-public class Address {
+public class Manufacturer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String addressee;
-    private String civicAddress;
-    private String municipality;
-    private String province;
-    private String postalCode;
+    private String manufacturer;
+    private String contactPerson;
+    private String email;
+    private String phone;
+    private String ext;
 }

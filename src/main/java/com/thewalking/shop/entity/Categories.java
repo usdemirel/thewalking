@@ -9,13 +9,10 @@ import javax.persistence.Id;
 
 @Entity
 @Data
-public class Address {
+public class Categories {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String addressee;
-    private String civicAddress;
-    private String municipality;
-    private String province;
-    private String postalCode;
+    private String category;
+    private String image;
 }
