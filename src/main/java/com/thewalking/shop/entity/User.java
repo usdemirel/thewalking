@@ -18,7 +18,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @CreationTimestamp
     LocalDateTime timestamp;
     @Email
@@ -37,5 +37,4 @@ public class User {
     private String phone;
     @OneToOne(cascade = CascadeType.PERSIST)
     private Address address;
-
 }
