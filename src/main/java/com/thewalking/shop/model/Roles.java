@@ -5,7 +5,7 @@ import java.io.Serializable;
 public enum Roles implements Serializable {
 
     ADMIN,OWNER,MANAGER
-    ,EMPLOYEE,CUSTOMER,GUEST,NEWHIRE,FIRE,UNAUTHORIZED;
+    ,EMPLOYEE,CUSTOMER,GUEST,HIREREQ,FIREREQ,UNAUTHORIZED;
 
     String role;
 

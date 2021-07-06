@@ -2,6 +2,8 @@ package com.thewalking.shop.service;
 
 import com.thewalking.shop.exception.ErrorMessages;
 import com.thewalking.shop.exception.UserException;
+import com.thewalking.shop.repository.EmployeeRepository;
+import com.thewalking.shop.repository.ManagerRepository;
 import com.thewalking.shop.repository.UserRepository;
 import com.thewalking.shop.model.Roles;
 import com.thewalking.shop.entity.User;
@@ -22,6 +24,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	private UserRepository userDao;
 
 	@Autowired
+	private EmployeeRepository employeeRepository;
+
+	@Autowired
+	private ManagerRepository managerRepository;
+
+	@Autowired
 	private BCryptPasswordEncoder bcryptEncoder;
 
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -35,7 +43,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	private Set<SimpleGrantedAuthority> getAuthority(User user) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 			authorities.add(new SimpleGrantedAuthority("ROLE_" + ((user.isActive()) ? user.getRole() : "UNAUTHORIZED")));
-		System.out.println(authorities + "________________________");
+			if(user.getRole().equals("EMPLOYEE")){
+				final Long branchId = employeeRepository.findById(user.getId()).get().getBranch().getId();
+				authorities.add(new SimpleGrantedAuthority("ROLE_" + branchId));
+			}else if(user.getRole().equals("MANAGER")){
+				final Long branchId = managerRepository.findById(user.getId()).get().getBranch().getId();
+				authorities.add(new SimpleGrantedAuthority("ROLE_" + branchId));
+			}
+			authorities.forEach(each -> System.out.println("* " + each.getAuthority()));
 		return authorities;
 	}
 
