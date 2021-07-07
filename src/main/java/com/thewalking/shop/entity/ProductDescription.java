@@ -1,8 +1,12 @@
 package com.thewalking.shop.entity;
 
+import com.thewalking.shop.model.Auditable;
 import jdk.jfr.Category;
 import lombok.Data;
 import net.bytebuddy.asm.Advice;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,22 +14,21 @@ import java.util.List;
 
 @Entity
 @Data
-public class ProductDescription {
+@EntityListeners(AuditingEntityListener.class)
+public class ProductDescription extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime dateListed;
     private String title;
     private String description;
     private String image;
     private boolean isActive;
-    private String tags;
+    private String keyWords;
     private String brand;
-    @OneToMany
-    private List<Categories> categories;
-    @OneToMany
+    private String categories;
+    @OneToMany(mappedBy = "productDescription")
     private List<Review> reviews;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.DETACH)
     private Manufacturer manufacturer;
 
 
