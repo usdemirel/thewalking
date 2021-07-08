@@ -4,7 +4,8 @@ import com.thewalking.shop.entity.Stock;
 import com.thewalking.shop.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,8 +26,10 @@ public class StockServiceImpl implements StockService{
     }
 
     @Override
-    public Iterable<Stock> findAll() {
-        return stockRepository.findAll();
+    public List<Stock> findAll() {
+        List<Stock> list = new ArrayList<>();
+        stockRepository.findAll().iterator().forEachRemaining(each -> list.add(each));
+        return list;
     }
 
     @Override

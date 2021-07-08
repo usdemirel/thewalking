@@ -1,15 +1,10 @@
 package com.thewalking.shop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.thewalking.shop.model.Auditable;
-import jdk.jfr.Category;
 import lombok.Data;
-import net.bytebuddy.asm.Advice;
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -26,6 +21,7 @@ public class ProductDescription extends Auditable<String> {
     private String keyWords;
     private String brand;
     private String categories;
+    @JsonIgnore
     @OneToMany(mappedBy = "productDescription")
     private List<Review> reviews;
     @OneToOne(cascade = CascadeType.DETACH)

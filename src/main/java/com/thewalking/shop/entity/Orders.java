@@ -3,12 +3,13 @@ package com.thewalking.shop.entity;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Data
-public class Orders {
+public class Orders implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -4,6 +4,7 @@ import com.thewalking.shop.entity.Product;
 import com.thewalking.shop.entity.ProductDescription;
 import com.thewalking.shop.entity.Stock;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface StockService {
@@ -12,7 +13,7 @@ public interface StockService {
 
     Stock save(Stock stock);
 
-    Iterable<Stock> findAll();
+    List<Stock> findAll();
 
     void deleteById(Long aLong);
 

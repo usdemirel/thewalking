@@ -3,11 +3,12 @@ package com.thewalking.shop.entity;
 import lombok.Data;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Data
 @EntityListeners(AuditingEntityListener.class)
-public class Product {
+public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +18,5 @@ public class Product {
     private String SKU;
     private String Size;
     private int maxOrderQuantity;
-
-
 
 }
