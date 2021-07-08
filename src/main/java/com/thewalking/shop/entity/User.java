@@ -9,12 +9,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -16,7 +16,7 @@ import javax.validation.Valid;
 import java.util.*;
 import static com.thewalking.shop.exception.ErrorMessages.RECORD_ALREADY_EXISTS;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 36000)
 @RestController
 public class UserController {
 

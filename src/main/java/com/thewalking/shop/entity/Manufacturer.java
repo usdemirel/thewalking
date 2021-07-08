@@ -1,15 +1,14 @@
 package com.thewalking.shop.entity;
 
 import lombok.Data;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Data
-public class Manufacturer {
+@EntityListeners(AuditingEntityListener.class)
+public class Manufacturer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,4 +17,6 @@ public class Manufacturer {
     private String email;
     private String phone;
     private String ext;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Address address;
 }

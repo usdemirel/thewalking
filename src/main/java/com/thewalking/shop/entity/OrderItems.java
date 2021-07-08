@@ -1,21 +1,21 @@
 package com.thewalking.shop.entity;
 
 import lombok.Data;
-
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Data
-public class OrderItems {
+public class OrderItems implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.DETACH)
     private Stock stock;
     private int quantity;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.DETACH)
     private Customer customer;
     private double paidSubtotal;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     private Orders order;
 }

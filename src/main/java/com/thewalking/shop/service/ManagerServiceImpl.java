@@ -25,11 +25,10 @@ public class ManagerServiceImpl implements ManagerService{
 
     @Override
     public Manager save(ManagerDto manager) {
-        System.out.println("____----__- " + manager);
         Manager newManager = new Manager();
         newManager.setEmail(manager.getEmail());
         newManager.setPassword(bcryptEncoder.encode(manager.getPassword()));
-        newManager.setRole("MANAGER");
+        newManager.setRole(manager.getRole());
         newManager.setFirstName(manager.getFirstName());
         newManager.setLastName(manager.getLastName());
         newManager.setPhone(manager.getPhone());
