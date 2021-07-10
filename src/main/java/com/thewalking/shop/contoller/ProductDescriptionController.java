@@ -9,6 +9,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestController
 public class ProductDescriptionController {
 
@@ -23,6 +25,11 @@ public class ProductDescriptionController {
         }catch(Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(),e);
         }
+    }
+
+    @RequestMapping(value="/productdescriptions", method= RequestMethod.GET)
+    public List<ProductDescription> findALl(){
+        return productDescriptionService.findAll();
     }
 
 

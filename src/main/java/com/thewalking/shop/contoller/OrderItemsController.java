@@ -44,5 +44,15 @@ public class OrderItemsController {
         return ResponseEntity.status(HttpStatus.OK).body(orderItemsService.findAll());
     }
 
+    @RequestMapping(value="/orderitems/user", method = RequestMethod.POST)
+    public ResponseEntity<List<OrderItems>> findByUserId(@RequestBody Customer customer){
+        List<OrderItems> list = orderItemsService.findAllByCustomerIdAndOrderIsNull(customer.getId());
+//        System.out.println(list);
+        return ResponseEntity.status(HttpStatus.OK).body(list);
+    }
+
+
+
+
 
 }

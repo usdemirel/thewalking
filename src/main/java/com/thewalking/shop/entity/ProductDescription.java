@@ -27,6 +27,11 @@ public class ProductDescription extends Auditable<String> {
     @OneToOne(cascade = CascadeType.DETACH)
     private Manufacturer manufacturer;
 
+    public void addReview(Review review) {
+        this.reviews.add(review);
+        review.setProductDescription(this);
+    }
+
 
 
 }

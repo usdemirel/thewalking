@@ -11,4 +11,6 @@ public interface CustomerService {
     Optional<Customer> findById(Long id);
     List<Customer> findAll();
     void deleteById(Long id);
+    Optional<Customer> findByEmail(String email);
+
 }

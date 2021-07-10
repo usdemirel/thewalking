@@ -24,7 +24,7 @@ public class StockController {
     }
 
     @RequestMapping(value="/stocks", method= RequestMethod.GET)
-    public List<Stock> save(){
+    public List<Stock> findALl(){
         return stockService.findAll();
     }
 
