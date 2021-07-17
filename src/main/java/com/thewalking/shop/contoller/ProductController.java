@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+@RequestMapping("/api/products")
 @RestController
 public class ProductController {
 
@@ -19,7 +20,7 @@ public class ProductController {
     ProductService productService;
 
     @PreAuthorize("hasAnyRole('OWNER','MANAGER','EMPLOYEE')")
-    @RequestMapping(value="/products", method = RequestMethod.POST)
+    @RequestMapping(value="", method = RequestMethod.POST)
     public ResponseEntity<Product> save(@RequestBody Product product){
         try{
             return ResponseEntity.ok(productService.save(product));

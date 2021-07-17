@@ -124,4 +124,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 //		}
 		return saved;
     }
+
+	@Override
+	public User update(User user) throws Exception {
+		if(user.getId()==null) throw new UserException("No ID identified");
+		User currentRecord = userDao.findById(user.getId()).orElseThrow(
+				new UserException("No record found with the given ID")
+		);
+		user.setPassword(currentRecord.getPassword());
+		return userDao.save(user);
+	}
 }

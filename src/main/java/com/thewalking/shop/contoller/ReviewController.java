@@ -13,17 +13,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@RequestMapping("/api/reviews")
 @RestController
 public class ReviewController {
     @Autowired
     ReviewService reviewService;
 
-    @RequestMapping(value = "/reviews", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<Review> save(@RequestBody Review review){
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewService.save(review));
     }
 
-    @RequestMapping(value="/reviews", method= RequestMethod.GET)
+    @RequestMapping(value="", method= RequestMethod.GET)
     public List<Review> findALl(){
         return reviewService.findAll();
     }

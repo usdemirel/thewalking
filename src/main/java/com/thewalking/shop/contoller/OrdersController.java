@@ -24,6 +24,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequestMapping("/api/orders")
 @RestController
 public class OrdersController {
 
@@ -37,7 +38,7 @@ public class OrdersController {
     CustomerService customerService;
 
     @Transactional
-    @RequestMapping(value="/orders", method= RequestMethod.POST)
+    @RequestMapping(value="", method= RequestMethod.POST)
     public ResponseEntity<Orders> save2(@RequestBody Customer customer){
 
         /*
@@ -84,7 +85,7 @@ public class OrdersController {
 
     }
 
-    @RequestMapping(value="/orders", method= RequestMethod.GET)
+    @RequestMapping(value="", method= RequestMethod.GET)
     public List<Orders> findAll(){
         return ordersService.findAll();
     }
