@@ -7,10 +7,9 @@ public class UserException extends RuntimeException implements Supplier<UserExce
         super("User Exception: " + message);
     }
 
-//    public UserException(String message, Throwable cause) {
-//        super(message, cause);
-//    }
-
+    public UserException(String message, Throwable cause) {
+        super("User Exception: " + message, cause);
+    }
 
     @Override
     public UserException get() {

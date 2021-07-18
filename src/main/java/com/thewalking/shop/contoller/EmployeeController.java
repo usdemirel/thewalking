@@ -2,6 +2,8 @@ package com.thewalking.shop.contoller;
 
 import com.thewalking.shop.dto.EmployeeDto;
 import com.thewalking.shop.entity.Employee;
+import com.thewalking.shop.entity.User;
+import com.thewalking.shop.exception.ErrorMessages;
 import com.thewalking.shop.exception.UserException;
 import com.thewalking.shop.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,22 +15,26 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import static com.thewalking.shop.exception.ErrorMessages.RECORD_ALREADY_EXISTS;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/employees")
+@RequestMapping("/api/employees")
 public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
 
     @PreAuthorize("hasAnyRole('OWNER','MANAGER')")
-    @RequestMapping(value="/", method = RequestMethod.GET)
+    @RequestMapping(value="", method = RequestMethod.GET)
     public List<Employee> listUser(){
         return employeeService.findAll();
     }
@@ -50,19 +56,25 @@ public class EmployeeController {
         return employeeService.toggleUserActivenessById(id);
     }
 
-    //    changeUserRole
-    @PreAuthorize("hasAnyRole('OWNER','MANAGER')")
-    @RequestMapping(value = "/{id}/role/change", method = RequestMethod.POST)
-    public Employee changeRole(@PathVariable Long id, @RequestBody String role){
-        System.out.println(id + " -- " + role);
-        return employeeService.changeUserRole(id, role);
-    }
 
     @PreAuthorize("hasAnyRole('MANAGER','OWNER')")
-    @RequestMapping(value="/signup", method = RequestMethod.POST)
+    @RequestMapping(value="", method = RequestMethod.POST)
     public ResponseEntity<Employee> saveEmployee(@Valid @RequestBody EmployeeDto employee){
+            try {
+                return ResponseEntity.status(HttpStatus.CREATED).body(employeeService.save(employee));
+            }catch (DataIntegrityViolationException e){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, RECORD_ALREADY_EXISTS.name(), e);
+            }catch (Exception e){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            }
+    }
+
+    @PreAuthorize("hasAnyRole('OWNER','MANAGER','EMPLOYEE')")
+    @RequestMapping(value="", method = RequestMethod.PUT)
+    public ResponseEntity<User> update(@Valid @RequestBody Employee employee){
+        System.out.println(employee);
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(employeeService.save(employee));
+            return ResponseEntity.status(HttpStatus.CREATED).body(employeeService.update(employee));
         }catch (DataIntegrityViolationException e){
             throw new ResponseStatusException(HttpStatus.CONFLICT, RECORD_ALREADY_EXISTS.name(), e);
         }catch (Exception e){
@@ -73,17 +85,30 @@ public class EmployeeController {
     @PreAuthorize("hasAnyRole('OWNER','MANAGER')")
     @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
     public ResponseEntity<List<Employee>> findEmployeesByBranchIdAndActiveIsTrue(@PathVariable Long branchId){
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        List<String> auths = authorities.stream().map(each -> each.getAuthority()).collect(Collectors.toList());
-        if((auths.contains("ROLE_MANAGER") && auths.contains("ROLE_" +branchId.toString()))
-        || auths.contains("ROLE_OWNER")){
             try{
                 return ResponseEntity.status(HttpStatus.OK).body(employeeService.findEmployeesByBranchIdAndActiveIsTrue(branchId));
             }catch (Exception e){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage(),e);
             }
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public Map<String, String> handleValidationExceptions(ConstraintViolationException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getConstraintViolations().stream().forEach(cv ->
+                errors.put(cv.getPropertyPath().toString(), cv.getMessage()));
+
+        return errors;
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ResponseStatusException.class)
+    public Map<String, String> handleResponseStatusException(ResponseStatusException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put(ex.getStatus().toString(),ex.getReason());
+        return errors;
     }
 
 /*
@@ -97,7 +122,6 @@ public class EmployeeController {
 
         return errors;
     }
-
 
  */
 

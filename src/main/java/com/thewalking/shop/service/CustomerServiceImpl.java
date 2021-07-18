@@ -2,6 +2,8 @@ package com.thewalking.shop.service;
 
 import com.thewalking.shop.dto.UserDto;
 import com.thewalking.shop.entity.Customer;
+import com.thewalking.shop.entity.User;
+import com.thewalking.shop.exception.UserException;
 import com.thewalking.shop.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,6 +36,16 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
+    public Customer update(Customer customer) throws Exception {
+        if(customer.getId()==null) throw new UserException("No ID identified");
+        User currentRecord = customerRepository.findById(customer.getId()).orElseThrow(
+                new UserException("No record found with the given ID")
+        );
+        customer.setPassword(currentRecord.getPassword());
+        return customerRepository.save(customer);
+    }
+
+    @Override
     public Optional<Customer> findById(Long id) {
         return customerRepository.findById(id);
     }
@@ -48,5 +60,10 @@ public class CustomerServiceImpl implements CustomerService{
     @Override
     public void deleteById(Long id) {
         customerRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Customer> findByEmail(String email) {
+        return customerRepository.findByEmail(email);
     }
 }

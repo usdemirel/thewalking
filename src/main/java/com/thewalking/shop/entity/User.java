@@ -38,4 +38,5 @@ public class User implements Serializable {
     private String phone;
     @OneToOne(cascade = CascadeType.PERSIST)
     private Address address;
+
 }

@@ -12,18 +12,19 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequestMapping("/api/categories")
 @RestController
 public class CategoriesController {
 
     @Autowired
     CategoriesService categoriesService;
 
-    @RequestMapping(value = "/categories", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<Categories> save(@RequestBody Categories categories){
         return ResponseEntity.status(HttpStatus.CREATED).body(categoriesService.save(categories));
     }
 
-    @RequestMapping(value = "/categories", method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public List<Categories> findAll(){
         List<Categories> list = new ArrayList<>();
         categoriesService.findAll().iterator().forEachRemaining(each -> list.add(each));

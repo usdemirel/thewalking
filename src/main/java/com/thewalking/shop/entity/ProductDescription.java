@@ -21,11 +21,21 @@ public class ProductDescription extends Auditable<String> {
     private String keyWords;
     private String brand;
     private String categories;
+    private double rating;
+    private int reviewCount;
+    private double minPrice;
+    private double maxPrice;
     @JsonIgnore
     @OneToMany(mappedBy = "productDescription")
     private List<Review> reviews;
     @OneToOne(cascade = CascadeType.DETACH)
     private Manufacturer manufacturer;
+
+
+    public void addReview(Review review) {
+        this.reviews.add(review);
+        review.setProductDescription(this);
+    }
 
 
 

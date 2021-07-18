@@ -34,3 +34,4 @@ build/
 
 ### Mavrn ##
 .mvn
+/src/main/java/com/thewalking/shop/~$Product-inventory.xlsx

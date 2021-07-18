@@ -11,6 +11,7 @@ import java.util.List;
 public interface UserService {
 
     User save(UserDto user) throws Exception;
+    User update(User user) throws Exception;
     List<User> findAll();
     void delete(long id);
     User findOne(String username);
@@ -19,4 +20,5 @@ public interface UserService {
     User makeUserInActive(User user);
     User toggleUserActivenessById(Long id);
     User changeUserRole(Long id, String role);
+
 }

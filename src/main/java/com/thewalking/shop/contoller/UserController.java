@@ -2,7 +2,7 @@ package com.thewalking.shop.contoller;
 
 import com.thewalking.shop.entity.User;
 import com.thewalking.shop.dto.UserDto;
-import com.thewalking.shop.model.Roles;
+import com.thewalking.shop.service.CustomerService;
 import com.thewalking.shop.service.UserService;
 import org.springframework.dao.DataIntegrityViolationException;
 import javax.validation.ConstraintViolationException;
@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import java.util.*;
 import static com.thewalking.shop.exception.ErrorMessages.RECORD_ALREADY_EXISTS;
 
+@RequestMapping("/api/users")
 @CrossOrigin(origins = "*", maxAge = 36000)
 @RestController
 public class UserController {
@@ -23,32 +24,34 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    CustomerService customerService;
+
     //@Secured({"ROLE_ADMIN", "ROLE_USER"})
     @PreAuthorize("hasAnyRole('ADMIN','OWNER')")
-    @RequestMapping(value="/users", method = RequestMethod.GET)
+    @RequestMapping(value="", method = RequestMethod.GET)
     public List<User> listUser(){
         return userService.findAll();
     }
 
-    //@Secured("ROLE_USER")
-    //@PreAuthorize("hasRole('USER')")
     @PreAuthorize("hasAnyRole('OWNER')")
-    @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public User getOne(@PathVariable(value = "id") Long id){
         return userService.findById(id);
     }
 
+    /*
 
 //    toggleUserActivenessById
     @PreAuthorize("hasAnyRole('OWNER')")
-    @RequestMapping(value = "/users/{id}/active/toggle", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}/active/toggle", method = RequestMethod.GET)
     public User toggleActiveness(@PathVariable Long id){
         return userService.toggleUserActivenessById(id);
     }
 
     //    changeUserRole
     @PreAuthorize("hasAnyRole('OWNER','MANAGER')")
-    @RequestMapping(value = "/users/{id}/role/change", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}/role/change", method = RequestMethod.POST)
     public User changeRole(@PathVariable Long id, @RequestBody String role){
         System.out.println(id + " -- " + role);
         return userService.changeUserRole(id, role);
@@ -57,13 +60,27 @@ public class UserController {
     @RequestMapping(value="/signup", method = RequestMethod.POST)
     public ResponseEntity<User> saveUser(@Valid @RequestBody UserDto user){
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
+            return ResponseEntity.status(HttpStatus.CREATED).body(customerService.save(user));
         }catch (DataIntegrityViolationException e){
             throw new ResponseStatusException(HttpStatus.CONFLICT, RECORD_ALREADY_EXISTS.name(), e);
         }catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
+
+
+    @RequestMapping(value="", method = RequestMethod.PUT)
+    public ResponseEntity<User> updateUser(@Valid @RequestBody User user){
+        System.out.println(user);
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(userService.update(user));
+        }catch (DataIntegrityViolationException e){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, RECORD_ALREADY_EXISTS.name(), e);
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+ */
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)

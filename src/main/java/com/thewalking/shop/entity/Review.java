@@ -1,5 +1,6 @@
 package com.thewalking.shop.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 public class Review implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(updatable = false, nullable = false)
     private Long id;
     @CreationTimestamp
     private LocalDateTime timestamp;
@@ -20,8 +22,10 @@ public class Review implements Serializable {
     private String title;
     private String message;
     private double rating;
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     ProductDescription productDescription;
     @OneToOne(cascade = CascadeType.DETACH)
     Review inReplyTo;
+
 }

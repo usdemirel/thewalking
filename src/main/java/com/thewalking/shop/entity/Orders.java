@@ -1,5 +1,6 @@
 package com.thewalking.shop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
@@ -15,6 +16,7 @@ public class Orders implements Serializable {
     private Long id;
     @CreationTimestamp
     private LocalDateTime timestamp;
+    @JsonIgnore
     @OneToMany(mappedBy = "order")
     private List<OrderItems> orderItems;
     private String status;
@@ -23,5 +25,7 @@ public class Orders implements Serializable {
     private double totalBeforeTax;
     private double estimatedTaxToBeCollected;
     private double grandTotal;
+    @ManyToOne(cascade = CascadeType.DETACH)
+    Customer customer;
 
 }

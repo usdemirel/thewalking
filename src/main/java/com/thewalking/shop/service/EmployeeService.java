@@ -8,15 +8,16 @@ import java.util.List;
 
 public interface EmployeeService {
     Employee save(EmployeeDto employee);
+    Employee update(Employee employee);
 
     List<Employee> findAll();
 
     Employee findById(Long id);
 
-    Employee changeUserRole(Long id, String role);
-
     Employee toggleUserActivenessById(Long id);
 
     List<Employee> findEmployeesByBranchIdAndActiveIsTrue(Long branchId);
+
+    boolean hasAllRoles(String... roles);
 
 }

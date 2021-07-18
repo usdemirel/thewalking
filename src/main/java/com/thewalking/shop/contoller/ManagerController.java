@@ -17,6 +17,7 @@ import java.util.List;
 
 import static com.thewalking.shop.exception.ErrorMessages.RECORD_ALREADY_EXISTS;
 
+@RequestMapping("/api/managers")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 //@RequestMapping("/managers")
@@ -57,7 +58,7 @@ public class ManagerController {
     }
 */
     @PreAuthorize("hasAnyRole('OWNER')")
-    @RequestMapping(value="/managers", method = RequestMethod.POST)
+    @RequestMapping(value="", method = RequestMethod.POST)
     public ResponseEntity<Manager> saveManager(@RequestBody ManagerDto manager){
         try {
             System.out.println("____----__- " + manager.getPassword());

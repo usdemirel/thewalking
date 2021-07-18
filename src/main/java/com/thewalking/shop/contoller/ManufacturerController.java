@@ -10,13 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequestMapping("/api/manufacturers")
 @RestController
 public class ManufacturerController {
 
     @Autowired
     ManufacturerService manufacturerService;
 
-    @RequestMapping(value="/manufacturers", method= RequestMethod.POST)
+    @RequestMapping(value="", method= RequestMethod.POST)
     public ResponseEntity<Manufacturer> save(@RequestBody Manufacturer manufacturer){
         return ResponseEntity.status(HttpStatus.CREATED).body(manufacturerService.save(manufacturer));
     }

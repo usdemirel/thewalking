@@ -21,13 +21,14 @@ import java.util.List;
 
 import static com.thewalking.shop.exception.ErrorMessages.RECORD_ALREADY_EXISTS;
 
+@RequestMapping("/api/orderitems")
 @RestController
 public class OrderItemsController {
 
     @Autowired
     OrderItemsService orderItemsService;
 
-    @RequestMapping(value="/orderitems", method = RequestMethod.POST)
+    @RequestMapping(value="", method = RequestMethod.POST)
     public ResponseEntity<OrderItems> save(@Valid @RequestBody OrderItems orderItems){
         System.out.println(orderItems);
         try {
@@ -39,10 +40,20 @@ public class OrderItemsController {
         }
     }
 
-    @RequestMapping(value="/orderitems", method = RequestMethod.GET)
+    @RequestMapping(value="", method = RequestMethod.GET)
     public ResponseEntity<List<OrderItems>> findAll(){
         return ResponseEntity.status(HttpStatus.OK).body(orderItemsService.findAll());
     }
+
+    @RequestMapping(value="/user", method = RequestMethod.POST)
+    public ResponseEntity<List<OrderItems>> findByUserId(@RequestBody Customer customer){
+        List<OrderItems> list = orderItemsService.findAllByCustomerIdAndOrderIsNull(customer.getId());
+//        System.out.println(list);
+        return ResponseEntity.status(HttpStatus.OK).body(list);
+    }
+
+
+
 
 
 }
