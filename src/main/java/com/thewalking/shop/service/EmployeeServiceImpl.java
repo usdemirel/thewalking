@@ -25,7 +25,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Autowired
     private BCryptPasswordEncoder bcryptEncoder;
 
-    private boolean hasAllRoles(String... roles){
+    public boolean hasAllRoles(String... roles){
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         List<String> auths = authorities.stream().map(each -> each.getAuthority()).collect(Collectors.toList());
 

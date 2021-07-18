@@ -1,5 +1,6 @@
 package com.thewalking.shop.contoller;
 
+import com.thewalking.shop.dto.ProductStoreTotalReportDto;
 import com.thewalking.shop.dto.StockDiscountDto;
 import com.thewalking.shop.dto.StockPriceQuantityDto;
 import com.thewalking.shop.entity.Stock;
@@ -10,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequestMapping("/api/stocks")
@@ -31,6 +29,7 @@ public class StockController {
     @RequestMapping(value="", method= RequestMethod.GET)
     public List<Stock> findALl(){
         stockService.findProductsInAllStoresBySKU();
+        stockService.findProductsInAllStoresByTitleBrandImageRatingSKUSize();
         return stockService.findAll();
     }
 
@@ -71,7 +70,24 @@ public class StockController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('OWNER')")
+    @RequestMapping(value = "/report/counts")
+    public ResponseEntity<List<ProductStoreTotalReportDto>> generateStockTotalsReport(){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(stockService.findProductsInAllStoresByTitleBrandImageRatingSKUSize());
+        }catch (Exception e){
+            throw new StockException("An error occurred while pulling the report!",e.getCause());
+        }
+    }
 
-
+    @PreAuthorize("hasAnyRole('OWNER','MANAGER')")
+    @RequestMapping(value = "/report/counts/{branchId}")
+    public ResponseEntity<List<ProductStoreTotalReportDto>> generateStockReportByBranch(@PathVariable Long branchId){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(stockService.findProductsInAllStoresByTitleBrandImageRatingSKUSizeByBranch(branchId));
+        }catch (Exception e){
+            throw new StockException("An error occurred while pulling the report!",e.getCause());
+        }
+    }
 
 }

@@ -1,11 +1,7 @@
 package com.thewalking.shop.service;
 
-import com.thewalking.shop.dto.ProductsTotal;
-import com.thewalking.shop.entity.Product;
-import com.thewalking.shop.entity.ProductDescription;
+import com.thewalking.shop.dto.ProductStoreTotalReportDto;
 import com.thewalking.shop.entity.Stock;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,7 +23,12 @@ public interface StockService {
 
     int setSalesPriceAndSalesStartDateAndSalesEndDateForStock(Double salesPrice, LocalDate salesStartDate, LocalDate salesEndDate, Long Id);
 
-    List<ProductsTotal> findProductsInAllStoresBySKU();
+    List<Object[]> findProductsInAllStoresBySKU();
+
+    List<ProductStoreTotalReportDto> findProductsInAllStoresByTitleBrandImageRatingSKUSize();
+
+    List<ProductStoreTotalReportDto> findProductsInAllStoresByTitleBrandImageRatingSKUSizeByBranch(Long branchId);
+
 
 
 }

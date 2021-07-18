@@ -1,15 +1,19 @@
 package com.thewalking.shop.service;
 
-import com.thewalking.shop.dto.ProductsTotal;
+import com.thewalking.shop.dto.ProductStoreTotalReportDto;
 import com.thewalking.shop.entity.ProductDescription;
 import com.thewalking.shop.entity.Stock;
+import com.thewalking.shop.exception.ErrorMessages;
+import com.thewalking.shop.exception.UserException;
 import com.thewalking.shop.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +25,9 @@ public class StockServiceImpl implements StockService{
 
     @Autowired
     ProductDescriptionService productDescriptionService;
+
+    @Autowired
+    EmployeeService employeeService;
 
     @Override
     public Optional<Stock> findById(Long aLong) {
@@ -76,13 +83,49 @@ public class StockServiceImpl implements StockService{
     }
 
     @Override
-    public List<ProductsTotal> findProductsInAllStoresBySKU() {
-        List<ProductsTotal> al = stockRepository.findProductsInAllStoresBySKU();
+    public List<Object[]> findProductsInAllStoresBySKU() {
+        List<Object[]> al = stockRepository.findProductsInAllStoresBySKU();
 
-        for( ProductsTotal obj : al){
-            System.out.println(obj);
+        for( Object[] obj : al){
+            System.out.println(obj[0] + " ");
+            System.out.print(obj[1]);
         }
 
         return al;
     }
+
+    @Override
+    public List<ProductStoreTotalReportDto> findProductsInAllStoresByTitleBrandImageRatingSKUSize() {
+        return convertToListOfProductStoreTotalReportDto(stockRepository.findProductsInAllStoresByTitleBrandImageRatingSKUSize());
+    }
+
+    @Override
+    public List<ProductStoreTotalReportDto> findProductsInAllStoresByTitleBrandImageRatingSKUSizeByBranch(Long branchId) {
+//        List<Object[]> al = stockRepository.findProductsInAllStoresByTitleBrandImageRatingSKUSize();
+//        List<ProductStoreTotalReportDto> list = new ArrayList<>();
+//        for( Object[] obj : al){
+//            list.add(new ProductStoreTotalReportDto(Integer.valueOf(Math.toIntExact((Long) obj[0])),(Long) obj[1],(Long) obj[2],
+//                    (String) obj[3],(String) obj[4],(String) obj[5],(String) obj[6],(String) obj[7],(Double) obj[8]));
+//        }
+//
+//        return list;
+
+
+        if((employeeService.hasAllRoles("MANAGER",branchId.toString()) || employeeService.hasAllRoles("OWNER")))
+            return convertToListOfProductStoreTotalReportDto(stockRepository.findProductsInAllStoresByTitleBrandImageRatingSKUSizeByBranch(branchId));
+        else
+            throw new UserException(ErrorMessages.NO_AUTHORIZATION.getErrorMessage());
+
+    }
+
+    private List<ProductStoreTotalReportDto> convertToListOfProductStoreTotalReportDto(List<Object[]> al){
+        List<ProductStoreTotalReportDto> list = new ArrayList<>();
+        for( Object[] obj : al){
+            list.add(new ProductStoreTotalReportDto(Integer.valueOf(Math.toIntExact((Long) obj[0])),(Long) obj[1],(Long) obj[2],
+                    (String) obj[3],(String) obj[4],(String) obj[5],(String) obj[6],(String) obj[7],(Double) obj[8]));
+        }
+        return list;
+    }
+
+
 }

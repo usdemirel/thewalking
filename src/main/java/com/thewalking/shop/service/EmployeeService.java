@@ -18,4 +18,6 @@ public interface EmployeeService {
 
     List<Employee> findEmployeesByBranchIdAndActiveIsTrue(Long branchId);
 
+    boolean hasAllRoles(String... roles);
+
 }
