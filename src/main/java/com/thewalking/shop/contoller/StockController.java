@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @RequestMapping("/api/stocks")
@@ -88,6 +90,12 @@ public class StockController {
         }catch (Exception e){
             throw new StockException("An error occurred while pulling the report!",e.getCause());
         }
+    }
+
+    @PreAuthorize("hasAnyRole('OWNER','MANAGER','CUSTOMER')")
+    @RequestMapping(value = "/offers")
+    public ResponseEntity<List<Stock>> findCurrentOffers(){
+        return ResponseEntity.status(HttpStatus.OK).body(stockService.findStocksBySalesStartDateBeforeAndSalesEndDateIsAfter(LocalDate.now(),LocalDate.now()));
     }
 
 }

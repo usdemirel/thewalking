@@ -29,6 +29,13 @@ public interface StockService {
 
     List<ProductStoreTotalReportDto> findProductsInAllStoresByTitleBrandImageRatingSKUSizeByBranch(Long branchId);
 
+    List<Stock> findStocksByBarcode(String barcode);
+    List<Stock> findStocksByProductId(Long productId);
+    List<Stock> findStocksByProduct_SKU(String SKU);
+    List<Stock> findStocksByQuantityBetween(int min, int max);
+    List<Stock> findStocksByPriceBetween(double minPrice, double maxPrice);
+    List<Stock> findStocksBySalesStartDateBeforeAndSalesEndDateIsAfter(LocalDate dayAfter, LocalDate dayBefore);
+
 
 
 }

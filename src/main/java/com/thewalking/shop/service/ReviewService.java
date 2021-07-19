@@ -10,4 +10,6 @@ public interface ReviewService {
     List<Review> findAll();
     Optional<Review> findById(Long id);
     void deleteById(Long id);
+    List<Review> findAllByProductDescriptionIsNull();
+
 }

@@ -50,5 +50,10 @@ public class ReviewServiceImpl implements ReviewService{
         reviewRepository.deleteById(id);
     }
 
+    @Override
+    public List<Review> findAllByProductDescriptionIsNull() {
+        return reviewRepository.findAllByProductDescriptionIsNull();
+    }
+
 
 }
