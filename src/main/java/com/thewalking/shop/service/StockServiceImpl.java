@@ -101,21 +101,40 @@ public class StockServiceImpl implements StockService{
 
     @Override
     public List<ProductStoreTotalReportDto> findProductsInAllStoresByTitleBrandImageRatingSKUSizeByBranch(Long branchId) {
-//        List<Object[]> al = stockRepository.findProductsInAllStoresByTitleBrandImageRatingSKUSize();
-//        List<ProductStoreTotalReportDto> list = new ArrayList<>();
-//        for( Object[] obj : al){
-//            list.add(new ProductStoreTotalReportDto(Integer.valueOf(Math.toIntExact((Long) obj[0])),(Long) obj[1],(Long) obj[2],
-//                    (String) obj[3],(String) obj[4],(String) obj[5],(String) obj[6],(String) obj[7],(Double) obj[8]));
-//        }
-//
-//        return list;
-
-
         if((employeeService.hasAllRoles("MANAGER",branchId.toString()) || employeeService.hasAllRoles("OWNER")))
             return convertToListOfProductStoreTotalReportDto(stockRepository.findProductsInAllStoresByTitleBrandImageRatingSKUSizeByBranch(branchId));
         else
             throw new UserException(ErrorMessages.NO_AUTHORIZATION.getErrorMessage());
+    }
 
+    @Override
+    public List<Stock> findStocksByBarcode(String barcode) {
+        return stockRepository.findStocksByBarcode(barcode);
+    }
+
+    @Override
+    public List<Stock> findStocksByProductId(Long productId) {
+        return stockRepository.findStocksByProductId(productId);
+    }
+
+    @Override
+    public List<Stock> findStocksByProduct_SKU(String SKU) {
+        return stockRepository.findStocksByProduct_SKU(SKU);
+    }
+
+    @Override
+    public List<Stock> findStocksByQuantityBetween(int min, int max) {
+        return stockRepository.findStocksByQuantityBetween(min, max);
+    }
+
+    @Override
+    public List<Stock> findStocksByPriceBetween(double minPrice, double maxPrice) {
+        return stockRepository.findStocksByPriceBetween(minPrice, maxPrice);
+    }
+
+    @Override
+    public List<Stock> findStocksBySalesStartDateBeforeAndSalesEndDateIsAfter(LocalDate today, LocalDate today2) {
+        return stockRepository.findStocksBySalesStartDateBeforeAndSalesEndDateIsAfter(today.plusDays(1),today2.minusDays(1));
     }
 
     private List<ProductStoreTotalReportDto> convertToListOfProductStoreTotalReportDto(List<Object[]> al){
