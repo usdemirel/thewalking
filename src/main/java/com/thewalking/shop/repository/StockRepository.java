@@ -14,15 +14,15 @@ import java.util.Optional;
 public interface StockRepository extends CrudRepository<Stock,Long> {
 
     @Modifying
-    @Query("update Stock stock set stock.price = ?1 where stock.Id = ?2")
+    @Query("update Stock stock set stock.price = ?1 where stock.id = ?2")
     int setPriceForStock(Double price, Long Id);
 
     @Modifying
-    @Query("update Stock stock set stock.quantity = ?1 where stock.Id = ?2")
+    @Query("update Stock stock set stock.quantity = ?1 where stock.id = ?2")
     int setQuantityForStock(Integer quantity, Long Id);
 
     @Modifying
-    @Query("update Stock stock set stock.salesPrice = ?1, stock.salesStartDate = ?2, stock.salesEndDate = ?3 where stock.Id = ?4")
+    @Query("update Stock stock set stock.salesPrice = ?1, stock.salesStartDate = ?2, stock.salesEndDate = ?3 where stock.id = ?4")
     int setSalesPriceAndSalesStartDateAndSalesEndDateForStock(Double salesPrice, LocalDate salesStartDate, LocalDate salesEndDate, Long Id);
 
     List<Stock> findStocksByBarcode(String barcode);

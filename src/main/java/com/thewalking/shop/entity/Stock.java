@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class Stock implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
     @ManyToOne(cascade=CascadeType.DETACH)
     private Product product;
     @OneToOne(cascade=CascadeType.DETACH)

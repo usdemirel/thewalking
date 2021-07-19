@@ -40,8 +40,6 @@ public class UserController {
         return userService.findById(id);
     }
 
-    /*
-
 //    toggleUserActivenessById
     @PreAuthorize("hasAnyRole('OWNER')")
     @RequestMapping(value = "/{id}/active/toggle", method = RequestMethod.GET)
@@ -80,7 +78,7 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
- */
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
