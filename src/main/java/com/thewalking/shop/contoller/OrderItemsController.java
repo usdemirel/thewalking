@@ -1,25 +1,16 @@
 package com.thewalking.shop.contoller;
 
-import com.thewalking.shop.dto.UserDto;
 import com.thewalking.shop.entity.Customer;
 import com.thewalking.shop.entity.OrderItems;
-import com.thewalking.shop.entity.User;
 import com.thewalking.shop.service.OrderItemsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
 import javax.validation.Valid;
-
 import java.util.List;
-
-import static com.thewalking.shop.exception.ErrorMessages.RECORD_ALREADY_EXISTS;
 
 @RequestMapping("/api/orderitems")
 @RestController
@@ -46,14 +37,15 @@ public class OrderItemsController {
     }
 
     @RequestMapping(value="/user", method = RequestMethod.POST)
-    public ResponseEntity<List<OrderItems>> findByUserId(@RequestBody Customer customer){
+    public ResponseEntity<List<OrderItems>> findByUser(@RequestBody Customer customer){
         List<OrderItems> list = orderItemsService.findAllByCustomerIdAndOrderIsNull(customer.getId());
 //        System.out.println(list);
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
-
-
-
-
+    @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteById(@PathVariable Long id){
+        orderItemsService.delete(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }

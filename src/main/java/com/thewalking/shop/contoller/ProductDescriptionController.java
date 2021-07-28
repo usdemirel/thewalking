@@ -3,6 +3,11 @@ package com.thewalking.shop.contoller;
 import com.thewalking.shop.entity.ProductDescription;
 import com.thewalking.shop.service.ProductDescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +23,19 @@ public class ProductDescriptionController {
     @Autowired
     ProductDescriptionService productDescriptionService;
 
-    @PreAuthorize("hasAnyRole('OWNER','MANAGER')")
+    @RequestMapping(value="/public", method = RequestMethod.GET)
+    public ResponseEntity<Page<ProductDescription>> findByTitleContaining(
+            @RequestParam(value="title", defaultValue = "") String title,
+            @RequestParam(value="page",defaultValue = "0") String page,
+            @RequestParam(value="size", defaultValue = "4") String size,
+            @RequestParam(value="sortby", defaultValue = "rating") String sortby
+            ) {
+        return ResponseEntity.ok().body(productDescriptionService.findByTitleContaining(title,PageRequest.of(Integer.valueOf(page), Integer.valueOf(size), Sort.by(sortby).descending())));
+    }
+
+
+
+        @PreAuthorize("hasAnyRole('OWNER','MANAGER')")
     @RequestMapping(value="", method = RequestMethod.POST)
     public ResponseEntity<ProductDescription> save(@RequestBody ProductDescription productDescription){
         try{

@@ -3,7 +3,6 @@ package com.thewalking.shop.contoller;
 import com.thewalking.shop.dto.EmployeeDto;
 import com.thewalking.shop.entity.Employee;
 import com.thewalking.shop.entity.User;
-import com.thewalking.shop.exception.ErrorMessages;
 import com.thewalking.shop.exception.UserException;
 import com.thewalking.shop.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,22 +10,19 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import static com.thewalking.shop.exception.ErrorMessages.RECORD_ALREADY_EXISTS;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@CrossOrigin(origins = "http://localhost:4200/")
 @RequestMapping("/api/employees")
 public class EmployeeController {
 
@@ -42,6 +38,7 @@ public class EmployeeController {
     @PreAuthorize("hasAnyRole('OWNER','MANAGER')")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Employee> getOne(@PathVariable(value = "id") Long id){
+        System.out.println("emp called " + id);
         try{
             return ResponseEntity.status(HttpStatus.OK).body(employeeService.findById(id));
         }catch (UserException e){
@@ -110,42 +107,4 @@ public class EmployeeController {
         errors.put(ex.getStatus().toString(),ex.getReason());
         return errors;
     }
-
-/*
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ConstraintViolationException.class)
-    public Map<String, String> handleValidationExceptions(ConstraintViolationException ex) {
-        Map<String, String> errors = new HashMap<>();
-
-        ex.getConstraintViolations().stream().forEach(cv ->
-                 errors.put(cv.getPropertyPath().toString(), cv.getMessage()));
-
-        return errors;
-    }
-
- */
-
-/**
- * https://restfulapi.net/resource-naming/
- * http://api.example.com/cart-management/users/{id}/cart/checkout
- * http://api.example.com/song-management/users/{id}/playlist/play
- *
- * http://api.example.com/inventory-management/managed-entities/{id}/install-script-location
- *
- * HTTP GET http://api.example.com/device-management/managed-devices  //Get all devices
- * HTTP POST http://api.example.com/device-management/managed-devices  //Create new Device
- * HTTP GET http://api.example.com/device-management/managed-devices/{id}  //Get device for given Id
- * HTTP PUT http://api.example.com/device-management/managed-devices/{id}  //Update device for given Id
- * HTTP DELETE http://api.example.com/device-management/managed-devices/{id}  //Delete device for given Id
- *
- *Use query component to filter URI collection
- *http://api.example.com/device-management/managed-devices
- * http://api.example.com/device-management/managed-devices?region=USA
- * http://api.example.com/device-management/managed-devices?region=USA&brand=XYZ
- * http://api.example.com/device-management/managed-devices?region=USA&brand=XYZ&sort=installation-date
- *
- *
- */
-
-
 }

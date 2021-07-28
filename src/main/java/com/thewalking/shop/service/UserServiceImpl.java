@@ -19,7 +19,7 @@ import java.util.*;
 public class UserServiceImpl implements UserDetailsService, UserService {
 	
 	@Autowired
-	private UserRepository userDao;
+	private UserRepository userRepository;
 
 	@Autowired
 	private EmployeeRepository employeeRepository;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	private BCryptPasswordEncoder bcryptEncoder;
 
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userDao.findByEmail(username);
+		User user = userRepository.findByEmail(username);
 		if(user == null){
 			throw new UsernameNotFoundException("Invalid username or password.");
 		}
@@ -51,36 +51,36 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
 	public List<User> findAll() {
 		List<User> list = new ArrayList<>();
-		userDao.findAll().iterator().forEachRemaining(list::add);
+		userRepository.findAll().iterator().forEachRemaining(list::add);
 		return list;
 	}
 
 	@Override
 	public void delete(long id) {
-		userDao.deleteById(id);
+		userRepository.deleteById(id);
 	}
 
 	@Override
 	public User findOne(String username) {
-		return userDao.findByEmail(username);
+		return userRepository.findByEmail(username);
 	}
 
 	@Override
 	public User findById(Long id) {
-		return userDao.findById(id).get();
+		return userRepository.findById(id).get();
 	}
 
 	@Override
 	public User makeUserInActive(User user) {
 		user.setActive(false);
-		return userDao.save(user);
+		return userRepository.save(user);
 	}
 
 	@Override
 	public User toggleUserActivenessById(Long id) {
-		Optional<User> changed = userDao.findById(id).flatMap(user -> {
+		Optional<User> changed = userRepository.findById(id).flatMap(user -> {
 			user.setActive(!user.isActive());
-			return Optional.of(userDao.save(user));
+			return Optional.of(userRepository.save(user));
 		});
 		return changed.orElseThrow(() -> {
 			throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
@@ -89,9 +89,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
 	@Override
 	public User changeUserRole(Long id, String role) {
-		Optional<User> changed = userDao.findById(id).flatMap(user -> {
+		Optional<User> changed = userRepository.findById(id).flatMap(user -> {
 			user.setRole(role);
-			return Optional.of(userDao.save(user));
+			return Optional.of(userRepository.save(user));
 		});
 		return changed.orElseThrow(() -> {
 			throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
@@ -110,23 +110,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 		newUser.setActive(user.isActive());
 		newUser.setAddress(user.getAddress());
 		User saved;
-//		try {
-			saved = userDao.save(newUser);
-//		}catch(DataIntegrityViolationException dive){
-//			throw new DataIntegrityViolationException(ErrorMessages.RECORD_ALREADY_EXISTS.getErrorMessage());
-//		}catch (Exception e){
-//			throw new Exception("not saved!");
-//		}
+		saved = userRepository.save(newUser);
 		return saved;
     }
 
 	@Override
 	public User update(User user) throws Exception {
 		if(user.getId()==null) throw new UserException("No ID identified");
-		User currentRecord = userDao.findById(user.getId()).orElseThrow(
+		User currentRecord = userRepository.findById(user.getId()).orElseThrow(
 				new UserException("No record found with the given ID")
 		);
 		user.setPassword(currentRecord.getPassword());
-		return userDao.save(user);
+		return userRepository.save(user);
 	}
 }

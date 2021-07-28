@@ -1,10 +1,14 @@
 package com.thewalking.shop.repository;
 
+import com.thewalking.shop.entity.Product;
 import com.thewalking.shop.entity.ProductDescription;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +16,9 @@ import java.util.Optional;
 @CrossOrigin
 public interface ProductDescriptionRepository extends CrudRepository<ProductDescription,Long> {
     List<ProductDescription> findAllByTitleIsContainingOrKeyWordsIsContainingOrCategoriesIsContaining(String title,String keyword, String category);
+
+    Page<ProductDescription> findByTitleContaining(@RequestParam("name") String title, Pageable pageable);
+
 
     @Modifying
     @Query("update ProductDescription pd set pd.rating = ?1 where pd.id = ?2")

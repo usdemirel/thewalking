@@ -16,4 +16,5 @@ public class Categories implements Serializable {
     private Long id;
     private String category;
     private String image;
+    private boolean active;
 }
