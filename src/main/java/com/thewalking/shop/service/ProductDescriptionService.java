@@ -1,13 +1,18 @@
 package com.thewalking.shop.service;
 
 import com.thewalking.shop.entity.ProductDescription;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ProductDescriptionService {
+
+    Page<ProductDescription> findByTitleContaining(@RequestParam("name") String title, Pageable pageable);
 
     Optional<ProductDescription> findById(Long aLong);
 

@@ -3,6 +3,8 @@ package com.thewalking.shop.service;
 import com.thewalking.shop.entity.ProductDescription;
 import com.thewalking.shop.repository.ProductDescriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,6 +16,12 @@ public class ProductDescriptionServiceImpl implements ProductDescriptionService{
 
     @Autowired
     ProductDescriptionRepository productDescriptionRepository;
+
+    @Override
+    public Page<ProductDescription> findByTitleContaining(String title, Pageable pageable) {
+        System.out.println(pageable.getPageNumber() + " " + pageable.getPageSize());
+        return productDescriptionRepository.findByTitleContaining(title, pageable);
+    }
 
     @Override
     public Optional<ProductDescription> findById(Long aLong) {

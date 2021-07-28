@@ -3,7 +3,6 @@ package com.thewalking.shop.security.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -14,7 +13,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import javax.annotation.Resource;
 
 @Configuration
@@ -50,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().
                 authorizeRequests()
-                .antMatchers("/api/token/*", "/api/users/signup", "/api/productdescriptions","/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**"
+                .antMatchers("/api/token/generate-token", "/api/users/signup", "/api/productdescriptions","/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**"
                 ,"/swagger-resources/**", "/swagger-resources","/webjars/**","/v2/api-docs").permitAll()
                 .anyRequest().authenticated()
                 .and()
