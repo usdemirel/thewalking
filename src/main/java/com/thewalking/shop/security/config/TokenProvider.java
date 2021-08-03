@@ -1,12 +1,15 @@
 package com.thewalking.shop.security.config;
 
+import com.thewalking.shop.exception.UserException;
 import io.jsonwebtoken.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -36,10 +39,16 @@ public class TokenProvider implements Serializable {
     }
 
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(SIGNING_KEY)
-                .parseClaimsJws(token)
-                .getBody();
+        try{
+            return Jwts.parser()
+                    .setSigningKey(SIGNING_KEY)
+                    .parseClaimsJws(token)
+                    .getBody();
+        }catch (ExpiredJwtException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            throw new UserException(e.getMessage(),e.getCause());
+        }
     }
 
     private Boolean isTokenExpired(String token) {

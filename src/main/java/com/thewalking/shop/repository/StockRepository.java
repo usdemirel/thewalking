@@ -1,14 +1,13 @@
 package com.thewalking.shop.repository;
 
+import com.thewalking.shop.entity.ProductDescription;
 import com.thewalking.shop.entity.Stock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
-
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin("http://localhost:4200")
 public interface StockRepository extends CrudRepository<Stock,Long> {
@@ -32,7 +31,6 @@ public interface StockRepository extends CrudRepository<Stock,Long> {
     List<Stock> findStocksByPriceBetween(double minPrice, double maxPrice);
     List<Stock> findStocksBySalesStartDateBeforeAndSalesEndDateIsAfter(LocalDate todayPlusOne, LocalDate todayMinusOne);
 
-
     @Query("SELECT sum(stock.quantity) as total, product.SKU From Stock stock inner Join Product product on stock.product.id = product.id group by product.SKU")
     List<Object[]> findProductsInAllStoresBySKU();
 
@@ -52,6 +50,9 @@ public interface StockRepository extends CrudRepository<Stock,Long> {
             "where product.productDescription.isActive = true and stock.branch.id = ?1 " +
             "group by product.id, product.productDescription.id, product.SKU, product.Size, product.productDescription.title,product.productDescription.brand,product.productDescription.image,product.productDescription.rating")
     List<Object[]> findProductsInAllStoresByTitleBrandImageRatingSKUSizeByBranch(Long branchId);
+
+
+    List<Stock> findAllByProductProductDescriptionId(Long id);
 
 
 

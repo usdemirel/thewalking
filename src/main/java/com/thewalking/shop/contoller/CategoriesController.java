@@ -5,13 +5,12 @@ import com.thewalking.shop.service.CategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin
 @RequestMapping("/api/categories")
 @RestController
 public class CategoriesController {
@@ -24,10 +23,12 @@ public class CategoriesController {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoriesService.save(categories));
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "/public", method = RequestMethod.GET)
     public List<Categories> findAll(){
         List<Categories> list = new ArrayList<>();
-        categoriesService.findAll().iterator().forEachRemaining(each -> list.add(each));
+        categoriesService.findAll().iterator().forEachRemaining(each -> {
+            if(each.isActive()) list.add(each);
+        });
         return list;
     }
 

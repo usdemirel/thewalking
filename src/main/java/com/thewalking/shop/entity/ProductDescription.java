@@ -20,7 +20,8 @@ public class ProductDescription extends Auditable<String> {
     private boolean isActive;
     private String keyWords;
     private String brand;
-    private String categories;
+    @ManyToOne
+    private Categories category;
     private double rating;
     private int reviewCount;
     private double minPrice;
