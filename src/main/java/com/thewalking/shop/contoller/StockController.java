@@ -6,6 +6,7 @@ import com.thewalking.shop.dto.StockPriceQuantityDto;
 import com.thewalking.shop.entity.Stock;
 import com.thewalking.shop.exception.ErrorMessages;
 import com.thewalking.shop.exception.StockException;
+import com.thewalking.shop.model.StockDto;
 import com.thewalking.shop.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,17 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+@CrossOrigin
 @RequestMapping("/api/stocks")
 @RestController
 public class StockController {
     @Autowired
     StockService stockService;
+
+    @RequestMapping(value="/productdescriptions/{id}/public", method= RequestMethod.GET)
+    public ResponseEntity<StockDto> findDistinctProductsByProductDescriptionId(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(stockService.findDistinctProductsByProductDescriptionId(id));
+    }
 
     @RequestMapping(value="", method= RequestMethod.POST)
     public ResponseEntity<Stock> save(@RequestBody Stock stock){

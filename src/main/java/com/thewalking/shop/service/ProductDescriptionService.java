@@ -14,6 +14,10 @@ public interface ProductDescriptionService {
 
     Page<ProductDescription> findByTitleContaining(@RequestParam("name") String title, Pageable pageable);
 
+    Page<ProductDescription> findAllByManyVarieties(String category, String title,double min, double max,Pageable pageable);
+
+    Page<ProductDescription> findAllByCategoryCategory(String category, Pageable pageable);
+
     Optional<ProductDescription> findById(Long aLong);
 
     ProductDescription save(ProductDescription productDescription);
@@ -22,7 +26,7 @@ public interface ProductDescriptionService {
 
     void deleteById(Long aLong);
 
-    List<ProductDescription> findAllByTitleIsContainingOrKeyWordsIsContainingOrCategoriesIsContaining(String keyword);
+    List<ProductDescription> findAllByTitleIsContainingOrKeyWordsIsContaining(String keyword);
 
     int setRatingForProductDescription(Double rating, Long id);
 

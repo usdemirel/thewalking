@@ -1,7 +1,9 @@
 package com.thewalking.shop.security.config;
 
+import com.thewalking.shop.exception.UserException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private TokenProvider jwtTokenUtil;
 
+    @SneakyThrows
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
         String header = req.getHeader(HEADER_STRING);
@@ -38,10 +41,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 username = jwtTokenUtil.getUsernameFromToken(authToken);
             } catch (IllegalArgumentException e) {
                 logger.error("an error occured during getting username from token", e);
+                throw new Exception("an error occured during getting username from token",e);
             } catch (ExpiredJwtException e) {
                 logger.warn("the token is expired and not valid anymore", e);
+                throw new Exception("the token is expired and not valid anymore", e);
             } catch(SignatureException e){
                 logger.error("Authentication Failed. Username or Password not valid.");
+                throw new Exception("Authentication Failed. Username or Password not valid.");
+            }catch (UserException e){
+                logger.error("an error occured during getting username from token", e);
+                throw new Exception("an error occured during getting username from token", e);
             }
         } else {
             logger.warn("couldn't find bearer string, will ignore the header");

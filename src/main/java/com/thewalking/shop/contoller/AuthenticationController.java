@@ -1,8 +1,10 @@
 package com.thewalking.shop.contoller;
 
+import com.thewalking.shop.entity.User;
 import com.thewalking.shop.security.config.TokenProvider;
 import com.thewalking.shop.model.AuthToken;
 import com.thewalking.shop.dto.LoginUser;
+import com.thewalking.shop.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,9 @@ public class AuthenticationController {
     @Autowired
     private TokenProvider jwtTokenUtil;
 
+    @Autowired
+    private UserService userService;
+
     @ApiOperation(value = "Returns token")
     @RequestMapping(value = "/generate-token", method = RequestMethod.POST)
     public ResponseEntity<?> register(@RequestBody LoginUser loginUser) throws AuthenticationException {
@@ -44,50 +49,13 @@ public class AuthenticationController {
         return ResponseEntity.ok(new AuthToken(token));
     }
 
-//    @PostMapping("/refreshtoken")
-//    public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
-//        String requestRefreshToken = request.getRefreshToken();
-//
-//        return refreshTokenService.findByToken(requestRefreshToken)
-//                .map(refreshTokenService::verifyExpiration)
-//                .map(RefreshToken::getUser)
-//                .map(user -> {
-//                    String token = jwtUtils.generateTokenFromUsername(user.getUsername());
-//                    return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
-//                })
-//                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
-//                        "Refresh token is not in database!"));
-//    }
-
-
-    @ApiOperation(value = "Returns token")
-    @RequestMapping(value = "/refresh", method = RequestMethod.POST)
-    public ResponseEntity<?> refreshToken(@RequestBody String token) throws AuthenticationException {
-
-
-        System.out.println("refreshed: " + token);
-        return ResponseEntity.ok(new AuthToken(token));
-    }
-
-//    @ApiOperation(value = "Returns token")
-//    @RequestMapping(value = "/refresh", method = RequestMethod.GET)
-//    public ResponseEntity<?> refreshToken() throws AuthenticationException {
-//        System.out.println("refresh called");
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        final String token = jwtTokenUtil.generateToken(authentication);
-//        System.out.println("refreshed: " + token);
-//        return ResponseEntity.ok(new AuthToken(token));
-//    }
-
-    @ApiOperation(value = "Log out")
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public ResponseEntity<?> logout() throws AuthenticationException {
-        System.out.println("logout called");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        final String token = jwtTokenUtil.generateToken(authentication);
-        System.out.println("refreshed: " + token);
-        return ResponseEntity.ok(new AuthToken(token));
+    @CrossOrigin(origins = "http://localhost:4200/")
+    @ApiOperation(value = "User details")
+    @RequestMapping(value = "/getuserdetails", method = RequestMethod.GET)
+    public ResponseEntity<User> getUserDetails() throws AuthenticationException {
+        System.out.println("email");
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(email);
+        return ResponseEntity.ok(userService.findOne(email));
     }
 }

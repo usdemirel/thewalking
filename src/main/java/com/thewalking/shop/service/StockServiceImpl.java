@@ -5,17 +5,14 @@ import com.thewalking.shop.entity.ProductDescription;
 import com.thewalking.shop.entity.Stock;
 import com.thewalking.shop.exception.ErrorMessages;
 import com.thewalking.shop.exception.UserException;
+import com.thewalking.shop.model.StockDetails;
+import com.thewalking.shop.model.StockDto;
 import com.thewalking.shop.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class StockServiceImpl implements StockService{
@@ -137,6 +134,35 @@ public class StockServiceImpl implements StockService{
         return stockRepository.findStocksBySalesStartDateBeforeAndSalesEndDateIsAfter(today.plusDays(1),today2.minusDays(1));
     }
 
+    @Override
+    public List<Stock> findAllByProductProductDescriptionId(Long id) {
+        return stockRepository.findAllByProductProductDescriptionId(id);
+    }
+
+    @Override
+    public StockDto findDistinctProductsByProductDescriptionId(Long id) {
+        List<Stock> stockList = stockRepository.findAllByProductProductDescriptionId(id);
+        StockDto stockDto = new StockDto();
+        stockDto.setStockDetailsList(new ArrayList<>());
+        stockDto.setProductDescription(stockList.get(0).getProduct().getProductDescription());
+        Set<String> sizes = new HashSet<>();
+        for(Stock stock : stockList){
+            if(!sizes.contains(stock.getProduct().getSize()) && stock.getQuantity() != 0){
+                sizes.add(stock.getProduct().getSize());
+                StockDetails stockDetails = new StockDetails(
+                        stock.getId(),
+                        stock.getPrice(),
+                        stock.getQuantity(),
+                        stock.getBranch(),
+                        stock.getProduct().getSize(),
+                        stock.getProduct().getMaxOrderQuantity()
+                );
+                stockDto.getStockDetailsList().add(stockDetails);
+            }
+        }
+        return stockDto;
+    }
+
     private List<ProductStoreTotalReportDto> convertToListOfProductStoreTotalReportDto(List<Object[]> al){
         List<ProductStoreTotalReportDto> list = new ArrayList<>();
         for( Object[] obj : al){
@@ -145,6 +171,5 @@ public class StockServiceImpl implements StockService{
         }
         return list;
     }
-
 
 }

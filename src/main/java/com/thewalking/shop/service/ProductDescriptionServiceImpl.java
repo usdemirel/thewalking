@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +20,19 @@ public class ProductDescriptionServiceImpl implements ProductDescriptionService{
     public Page<ProductDescription> findByTitleContaining(String title, Pageable pageable) {
         System.out.println(pageable.getPageNumber() + " " + pageable.getPageSize());
         return productDescriptionRepository.findByTitleContaining(title, pageable);
+    }
+
+    @Override
+    public Page<ProductDescription> findAllByManyVarieties(String category, String title, double min, double max, Pageable pageable) {
+        if(category.equals("") && title.equals("")) return productDescriptionRepository.findAllByMinPriceGreaterThanEqualAndMaxPriceLessThanEqual(min, max, pageable);
+        else if (category.equals("")) return productDescriptionRepository.findAllByTitleIsContainingAndMinPriceGreaterThanEqualAndMaxPriceLessThanEqual(title, min, max, pageable);
+        else if(min==0.0 & max==10000) return productDescriptionRepository.findAllByCategoryCategoryAndTitleIsContainingOrCategoryCategoryAndKeyWordsIsContaining(category,title,category,title,pageable);
+        return productDescriptionRepository.findAllByCategoryCategoryAndTitleIsContainingAndMinPriceGreaterThanEqualAndMaxPriceLessThanEqual(category, title, min, max, pageable);
+    }
+
+    @Override
+    public Page<ProductDescription> findAllByCategoryCategory(String category, Pageable pageable) {
+        return productDescriptionRepository.findAllByCategoryCategory(category,pageable);
     }
 
     @Override
@@ -46,8 +58,8 @@ public class ProductDescriptionServiceImpl implements ProductDescriptionService{
     }
 
     @Override
-    public List<ProductDescription> findAllByTitleIsContainingOrKeyWordsIsContainingOrCategoriesIsContaining(String keyword) {
-        return productDescriptionRepository.findAllByTitleIsContainingOrKeyWordsIsContainingOrCategoriesIsContaining(keyword,keyword,keyword);
+    public List<ProductDescription> findAllByTitleIsContainingOrKeyWordsIsContaining(String keyword) {
+        return productDescriptionRepository.findAllByTitleIsContainingOrKeyWordsIsContaining(keyword,keyword);
     }
 
     @Override
