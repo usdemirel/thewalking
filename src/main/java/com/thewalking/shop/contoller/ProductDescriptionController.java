@@ -28,7 +28,7 @@ public class ProductDescriptionController {
             @RequestParam(value = "minPrice", defaultValue = "0") String minPrice,
             @RequestParam(value = "maxPrice", defaultValue = "10000") String maxPrice,
             @RequestParam(value = "page", defaultValue = "0") String page,
-            @RequestParam(value = "size", defaultValue = "2") String size,
+            @RequestParam(value = "size", defaultValue = "6") String size,
             @RequestParam(value = "sortby", defaultValue = "rating") String sortby
     ) {
         if(category.equalsIgnoreCase("All")) category="";
