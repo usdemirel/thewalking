@@ -15,5 +15,6 @@ public interface OrdersService {
     Optional<Orders> findById(Long id);
     void deleteById(Long id);
     List<Orders> findAllByOrderDate(LocalDate date);
+    public Orders retrieveItemsInCart();
 
 }

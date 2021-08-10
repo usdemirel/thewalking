@@ -58,8 +58,10 @@ public class OrderItemsController {
     }
 
     @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteById(@PathVariable Long id){
+    public ResponseEntity<Long> deleteById(@PathVariable Long id){
+        System.out.println("delete item with an id of " + id);
         orderItemsService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        System.out.println(">________ deleted");
+        return ResponseEntity.status(HttpStatus.OK).body(id);
     }
 }

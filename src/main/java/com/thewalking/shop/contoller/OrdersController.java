@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RequestMapping("/api/orders")
+@CrossOrigin
 @RestController
 public class OrdersController {
 
@@ -33,6 +34,16 @@ public class OrdersController {
     public ResponseEntity<Orders> handleOrderRequest(@RequestBody Customer customer){
         try{
             return ResponseEntity.status(HttpStatus.CREATED).body(ordersService.checkoutAllItemsInCart(customer));
+        }catch(Exception e){
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Transaction FAILED",e);
+        }
+    }
+
+    @RequestMapping(value="/cart", method= RequestMethod.GET)
+    public ResponseEntity<Orders> retrieveOrderRequest(){
+        System.out.println("retrieveOrderRequest");
+        try{
+            return ResponseEntity.status(HttpStatus.CREATED).body(ordersService.retrieveItemsInCart());
         }catch(Exception e){
             throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Transaction FAILED",e);
         }

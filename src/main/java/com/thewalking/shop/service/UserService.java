@@ -20,5 +20,7 @@ public interface UserService {
     User makeUserInActive(User user);
     User toggleUserActivenessById(Long id);
     User changeUserRole(Long id, String role);
+    public String getUserEmail();
+
 
 }

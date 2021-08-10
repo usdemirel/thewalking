@@ -8,6 +8,7 @@ import com.thewalking.shop.utilityservices.ShippingAndHandlingCost;
 import com.thewalking.shop.utilityservices.TaxRates;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import javax.transaction.Transactional;
@@ -28,6 +29,9 @@ public class OrdersServiceImpl implements OrdersService{
     @Autowired
     CustomerService customerService;
 
+    @Autowired
+    UserService userService;
+
     @Override
     public Orders save(Orders orders) {
         return ordersRepository.save(orders);
@@ -37,6 +41,13 @@ public class OrdersServiceImpl implements OrdersService{
     @Override
     public Orders checkoutAllItemsInCart(Customer customer) {
         return ordersRepository.save(processOrderRequestForCustomer(customer));
+    }
+
+    @Transactional
+    @Override
+    public Orders retrieveItemsInCart() {
+        Customer customer = customerService.findByEmail(userService.getUserEmail()).get();
+        return ordersRepository.save(retrieveCheckoutInformation(customer));
     }
 
     @Override
@@ -62,7 +73,7 @@ public class OrdersServiceImpl implements OrdersService{
     }
 
     @Transactional(value = Transactional.TxType.REQUIRED)
-    private Orders processOrderRequestForCustomer(Customer customer){
+    public Orders processOrderRequestForCustomer(Customer customer){
         customer = customerService.findById(customer.getId()).get();
 
         //Open an empty order first to get the order id
@@ -86,6 +97,39 @@ public class OrdersServiceImpl implements OrdersService{
         orders.setOrderItems(orderItemsList);
         orders.setStatus("Order Placed!");
         orders.setTotalBeforeTax(subTotal);
+        return orders;
+    }
+
+
+    @Transactional(value = Transactional.TxType.REQUIRED)
+    public Orders retrieveCheckoutInformation(Customer customer){
+
+        //Open an empty order first to get the order id
+        Orders orders = new Orders();
+
+        List<OrderItems> orderItemsList = orderItemsService.findAllByCustomerIdAndOrderIsNull(customer.getId());
+        if(orderItemsList.size()==0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No item Found in the Cart!");
+
+        orderItemsList.forEach(each -> {
+//            each.setOrder(orders); //set order id for order items
+            each.setPaidSubtotal(each.getQuantity()*each.getStock().getPrice()); // set subtotal for each item
+        });
+        double subTotal =orderItemsList.stream().mapToDouble(each -> each.getPaidSubtotal()).sum();
+        double shippingHandling = ShippingAndHandlingCost.province(customer.getAddress().getProvince());
+        double estimatedTaxToBeCollected = TaxRates.province(customer.getAddress().getProvince()) * subTotal;
+        double grandTotal = subTotal +estimatedTaxToBeCollected + shippingHandling;
+
+        orders.setCustomer(customer);
+
+        orders.setGrandTotal(grandTotal);
+        orders.setShippingHandling(shippingHandling);
+        orders.setEstimatedTaxToBeCollected(estimatedTaxToBeCollected);
+
+        orders.setOrderItems(orderItemsList);
+        orders.setStatus("Order in progress");
+
+        orders.setTotalBeforeTax(subTotal);
+
         return orders;
     }
 }

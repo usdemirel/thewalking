@@ -8,6 +8,7 @@ import com.thewalking.shop.entity.User;
 import com.thewalking.shop.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,6 +34,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 			throw new UsernameNotFoundException("Invalid username or password.");
 		}
 		return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), getAuthority(user));
+	}
+
+	@Override
+	public String getUserEmail(){
+		return SecurityContextHolder.getContext().getAuthentication().getName();
 	}
 
 	private Set<SimpleGrantedAuthority> getAuthority(User user) {
