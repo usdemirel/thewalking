@@ -1,11 +1,13 @@
 package com.thewalking.shop.contoller;
 
 import com.thewalking.shop.dto.UserDto;
+import com.thewalking.shop.entity.Address;
 import com.thewalking.shop.entity.Customer;
 import com.thewalking.shop.entity.User;
 import com.thewalking.shop.exception.ErrorMessages;
 import com.thewalking.shop.exception.UserException;
 import com.thewalking.shop.service.CustomerService;
+import com.thewalking.shop.service.UserService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,23 +26,42 @@ import java.util.Map;
 
 import static com.thewalking.shop.exception.ErrorMessages.RECORD_ALREADY_EXISTS;
 
+@CrossOrigin
 @RequestMapping("/api/customers")
 @RestController
 public class CustomerController {
     @Autowired
     CustomerService customerService;
+    @Autowired
+    UserService userService;
 
     @RequestMapping(value="/signup", method = RequestMethod.POST)
     public ResponseEntity<User> saveCustomer(@Valid @RequestBody UserDto user){
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(customerService.save(user));
         }catch (DataIntegrityViolationException e){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, RECORD_ALREADY_EXISTS.name(), e.getCause());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, RECORD_ALREADY_EXISTS.toString());
         }catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
 
+
+    @RequestMapping(value="/address", method = RequestMethod.POST)
+    public ResponseEntity<User> updateOrCreateCustomerAddress(@Valid @RequestBody Address address){
+        System.out.println("___________________________--------------");
+        System.out.println(address);
+        try {
+            Customer customer = customerService.findByEmail(userService.getUserEmail()).get();
+            customer.setAddress(address);
+            customerService.save(customer);
+            return ResponseEntity.status(HttpStatus.CREATED).body(customer);
+        }catch (DataIntegrityViolationException e){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, RECORD_ALREADY_EXISTS.toString());
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
 
     @PreAuthorize("hasAnyRole('CUSTOMER')")
     @RequestMapping(value="", method = RequestMethod.PUT)

@@ -2,6 +2,7 @@ package com.thewalking.shop.contoller;
 
 import com.thewalking.shop.entity.Customer;
 import com.thewalking.shop.entity.Orders;
+import com.thewalking.shop.exception.OrderException;
 import com.thewalking.shop.service.CustomerService;
 import com.thewalking.shop.service.OrderItemsService;
 import com.thewalking.shop.service.OrdersService;
@@ -44,6 +45,8 @@ public class OrdersController {
         System.out.println("retrieveOrderRequest");
         try{
             return ResponseEntity.status(HttpStatus.CREATED).body(ordersService.retrieveItemsInCart());
+        }catch (OrderException oe){
+            throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, oe.getMessage());
         }catch(Exception e){
             throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Transaction FAILED",e);
         }

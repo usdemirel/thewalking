@@ -3,6 +3,7 @@ package com.thewalking.shop.service;
 import com.thewalking.shop.entity.Customer;
 import com.thewalking.shop.entity.OrderItems;
 import com.thewalking.shop.entity.Orders;
+import com.thewalking.shop.exception.OrderException;
 import com.thewalking.shop.repository.OrdersRepository;
 import com.thewalking.shop.utilityservices.ShippingAndHandlingCost;
 import com.thewalking.shop.utilityservices.TaxRates;
@@ -103,6 +104,9 @@ public class OrdersServiceImpl implements OrdersService{
 
     @Transactional(value = Transactional.TxType.REQUIRED)
     public Orders retrieveCheckoutInformation(Customer customer){
+
+        if(customer.getAddress()==null)
+            throw new OrderException("Please enter your address in your profile!");
 
         //Open an empty order first to get the order id
         Orders orders = new Orders();
