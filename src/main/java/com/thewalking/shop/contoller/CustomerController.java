@@ -111,13 +111,13 @@ public class CustomerController {
         return errors;
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(ResponseStatusException.class)
-    public Map<String, String> handleResponseStatusException(ResponseStatusException ex) {
-        Map<String, String> errors = new HashMap<>();
-        errors.put(ex.getStatus().toString(),ex.getReason());
-        return errors;
-    }
+//    @ResponseStatus(HttpStatus.CONFLICT)
+//    @ExceptionHandler(ResponseStatusException.class)
+//    public Map<String, String> handleResponseStatusException(ResponseStatusException ex) {
+//        Map<String, String> errors = new HashMap<>();
+//        errors.put(ex.getStatus().toString(),ex.getReason());
+//        return errors;
+//    }
 
 
 }
